@@ -57,23 +57,36 @@ function Test() {
     });
     const showModal = (type) => {
         setState({
-          visible: true,
-          modalType: type,
+            visible: true,
+            modalType: type,
         });
     };
     const handleOk = () => {
         setState({
-          visible: false,
-          colorModal: false,
+            visible: false,
+            colorModal: false,
         });
-      };
-    
-      const handleCancel = () => {
+    };
+
+    const handleCancel = () => {
         setState({
-          visible: false,
-          colorModal: false,
+            visible: false,
+            colorModal: false,
         });
-      };
+    };
+    const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+          setState({ ...state, selectedRowKeys, selectedRows });
+        },
+        getCheckboxProps: (record) => ({
+          disabled: record.name === 'Disabled User', // Column configuration not to be checked
+          name: record.name,
+        }),
+    };
+    
+    function onChange(pagination, filters, sorter, extra) {
+        setState({ ...state, values: { pagination, filters, sorter, extra } });
+      }
 
     return (
         <>
@@ -88,7 +101,7 @@ function Test() {
                             onOk={handleOk}
                             onCancel={handleCancel}
                         >
-                          <input type="text" />
+                           
                         </Modal>
 
                         <BorderLessHeading>
@@ -102,6 +115,20 @@ function Test() {
                                         total: dataSource.length,
                                         showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
                                     }}
+                                />
+                            </Cards>
+                            <Cards title="Data Table">
+                                <DataTable
+                                    filterOnchange
+                                    filterOption
+                                    tableData={dataSource}
+                                    columns={columns}
+                                    rowSelection={false}
+                                // pagination={{
+                                //     defaultPageSize: 3,
+                                //     total: dataSource.length,
+                                //     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+                                // }}
                                 />
                             </Cards>
                         </BorderLessHeading>
