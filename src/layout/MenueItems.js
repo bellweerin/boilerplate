@@ -23,7 +23,7 @@ import {
   UilEnvelope,
   UilExchange,
   UilExclamationOctagon,
-  // UilExpandArrowsAlt,
+  UilExpandArrowsAlt,
   UilFile,
   UilFileCheck,
   UilFileShieldAlt,
@@ -164,8 +164,7 @@ function MenuItems({ toggleCollapsed }) {
 
     getItem(
       <NavLink onClick={toggleCollapsed} to={`${path}/pages/test`}>
-        {t('รายการแจ้งซ่อม')}
-       
+        {t('รายการแจ้งซ่อม')}   
       </NavLink>,
       'test1',
       !topMenu && <UilExclamationOctagon />,

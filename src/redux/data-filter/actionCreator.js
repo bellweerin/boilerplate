@@ -1,5 +1,9 @@
 import actions from './actions';
-import initialState from '../../demoData/data-table.json';
+// import initialState from '../../demoData/data-table.json';
+// import initialState from '../../demoData/test.json';
+
+let initialState = [];
+
 
 const {
   dataTableReadBegin,
@@ -13,9 +17,11 @@ const {
   dataLiveFilterErr,
 } = actions;
 
-const tableReadData = () => {
+const tableReadData = (data) => {
   return async (dispatch) => {
     try {
+      initialState = data;
+      // console.log("initialState : ", initialState)
       dispatch(dataTableReadBegin());
       dispatch(dataTableReadSuccess(initialState));
     } catch (err) {
@@ -41,11 +47,31 @@ const filterWithSubmit = (id, status) => {
 };
 
 const dataLiveFilter = (value, key) => {
+  console.log(key, value)
   return async (dispatch) => {
     try {
       dispatch(dataLiveFilterBegin());
-      const data = initialState.filter((item) => item[key].toLowerCase().startsWith(value.toLowerCase()));
+      let data = []
+      if (Array.isArray(value)) {
+        let latest = []
+        for (const val of value) {
+          latest = initialState.filter((item) => {
+            return item[key].toLowerCase().startsWith(val.toLowerCase());
+          })
+          
+          data = [...new Set([...data, ...latest])];
+        }
+
+        console.log("1 ", data);
+      }
+      else {
+        data = initialState.filter((item) => {
+          return item[key].toLowerCase().startsWith(value.toLowerCase());
+        });
+  
+      }
       dispatch(dataLiveFilterSuccess(data));
+
     } catch (err) {
       dispatch(dataLiveFilterErr(err));
     }

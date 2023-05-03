@@ -20,6 +20,10 @@ const initialState = {
 
 const dataTableReducer = (state = initialState, action) => {
   const { type, data, err } = action;
+
+
+  // console.log("reducer => ", action.data)
+
   switch (type) {
     case DATA_TABLE_READ_BEGIN:
       return {

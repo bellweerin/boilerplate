@@ -8,19 +8,20 @@ import { TableWrapper } from '../../container/styled';
 import { dataLiveFilter, filterWithSubmit } from '../../redux/data-filter/actionCreator';
 import { Button } from '../buttons/buttons';
 
-function DataTable({ filterOption, filterOnchange, rowSelection, tableData, columns }) {
+function DataTable({ filterOption, filterOnchange, rowSelection, tableData, columns, statusItem, searchKey }) {
   const dispatch = useDispatch();
   const handleIdSearch = (e) => {
     const id = e.currentTarget.value;
     dispatch(dataLiveFilter(id, 'id'));
   };
   const handleStatusSearch = (value) => {
+    console.log(value);
     dispatch(dataLiveFilter(value, 'status'));
   };
 
   const handleDataUser = (e) => {
     const { value } = e.currentTarget;
-    dispatch(dataLiveFilter(value, 'name'));
+    dispatch(dataLiveFilter(value, searchKey));
   };
 
   const handleSearch = () => {
@@ -29,6 +30,14 @@ function DataTable({ filterOption, filterOnchange, rowSelection, tableData, colu
     dispatch(filterWithSubmit(id, status));
   };
   const prefix = <UilSearch />;
+
+  const ItemSelection = statusItem?.map((item,index)=>{
+    return <> <Select.Option key={index} value={item}>{item}</Select.Option></>
+    })
+  // } 
+  // => {
+//     return (<> <Select.Option value="jack"></Select.Option></>);
+//   }
   return (
     <DataTableStyleWrap>
       {filterOption ? (
@@ -60,17 +69,22 @@ function DataTable({ filterOption, filterOnchange, rowSelection, tableData, colu
                 <Input onChange={handleIdSearch} placeholder="Search with Id" />
               </div>
               <div className="ninjadash-datatable-filter__input">
-                <span className="label">Status:</span>
-                <Select onChange={handleStatusSearch} style={{ width: 200 }} defaultValue="active">
+                {/* <span className="label">Status:</span> */}
+                
+                  <Select onChange={handleStatusSearch}  mode="tags" style={{ width: 300 }} placeholder="Please select">
+                  {ItemSelection}
+                  </Select>
+            
+                {/* <Select onChange={handleStatusSearch} style={{ width: 200 }} defaultValue="active">
                   <Select.Option value="active">Active</Select.Option>
                   <Select.Option value="deactiveted">Deactivated</Select.Option>
                   <Select.Option value="blocked">Blocked</Select.Option>
-                </Select>
+                </Select> */}
               </div>
             </div>
           )}
           <div className="ninjadash-datatable-filter__right">
-            <Input onChange={handleDataUser} size="default" placeholder="Search" prefix={prefix} />
+            <Input onChange={(e) => handleDataUser(e)} size="default" placeholder="Search" prefix={prefix} />
           </div>
         </div>
       ) : (

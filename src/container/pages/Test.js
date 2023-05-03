@@ -8,11 +8,13 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 import { Button } from '../../components/buttons/buttons';
 import { Modal } from '../../components/modals/antd-modals';
 import DataTable from '../../components/table/DataTable';
+import {Tag} from '../../components/tags/tags';
 
 import { Main, BorderLessHeading } from '../styled';
 // import { TaskLists } from '../project/style';
 
-// import { tableReadData } from '../../redux/data-filter/actionCreator';
+import { tableReadData } from '../../redux/data-filter/actionCreator';
+
 
 
 const columns = [
@@ -22,29 +24,62 @@ const columns = [
         key: 'id'
     },
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name'
-    }
+        title: 'informant',
+        dataIndex: 'informant',
+        key: 'informant'
+    },
+    {
+        title: 'subject',
+        dataIndex: 'subject',
+        key: 'subject'
+    },
+    {
+        title: 'status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (status) => {
+            if (status == 'open') { return (<Tag color="#87d068" >{status}</Tag>) }
+            if (status == 'close') { return (<Tag color="#f50" >{status}</Tag>) }
+        }
+    },
+    {
+        title: 'tools',
+        dataIndex: 'tools',
+        key: 'tools',
+        render: () => {
+            return ( <><Button size="small" type="warning">edit</Button>
+            <Button size="small" type="danger">delete</Button></>);
+        }
+
+    },
 ];
 
 const dataSource = [
     {
         id: 1,
-        name: 'Adam'
-
+        informant: 'Adam',
+        subject: 'repair',
+        status: 'open',
     },
     {
         id: 2,
-        name: 'Anna'
+        informant: 'Kevin',
+        subject: 'repair',
+        status: 'open',
     },
     {
         id: 3,
-        name: 'Kevin'
-    }, {
+        informant: 'Rora',
+        subject: 'repair',
+        status: 'close',
+    },
+    {
         id: 4,
-        name: 'Edwin'
-    }
+        informant: 'Anna',
+        subject: 'repair',
+        status: 'close',
+    },
+   
 ];
 
 function Test() {
@@ -83,10 +118,24 @@ function Test() {
           name: record.name,
         }),
     };
+
+    useEffect(() => {
+        if (dispatch) {
+          dispatch(tableReadData(dataSource));
+        }
+      }, [dispatch]);
+
+      const { TableData } = useSelector((states) => {
+        return {
+            TableData: states.dataTable.tableData,
+        };
+      });
     
     function onChange(pagination, filters, sorter, extra) {
         setState({ ...state, values: { pagination, filters, sorter, extra } });
-      }
+    }
+    
+  
 
     return (
         <>
@@ -100,12 +149,12 @@ function Test() {
                             visible={state.visible}
                             onOk={handleOk}
                             onCancel={handleCancel}
-                        >
-                           
+                            // onChange={onChange}
+                        > 
                         </Modal>
 
                         <BorderLessHeading>
-                            <Cards title="Data Table">
+                            <Cards title="รายการแจ้งซ่อม">
                                 <Table
                                     dataSource={dataSource}
                                     columns={columns}
@@ -117,19 +166,22 @@ function Test() {
                                     }}
                                 />
                             </Cards>
-                            <Cards title="Data Table">
+                            <Cards title="รายการแจ้งซ่อม">
                                 <DataTable
                                     filterOnchange
                                     filterOption
-                                    tableData={dataSource}
+                                    tableData={TableData}
                                     columns={columns}
                                     rowSelection={false}
+                                    statusItem={['open', 'close']}
+                                    searchKey={'informant'}
                                 // pagination={{
                                 //     defaultPageSize: 3,
                                 //     total: dataSource.length,
                                 //     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
                                 // }}
-                                />
+                                >   
+                                </DataTable>
                             </Cards>
                         </BorderLessHeading>
                     </Col>
